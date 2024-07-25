@@ -1,0 +1,254 @@
+/* Slider */
+.slick-slider
+{
+    position: relative;
+
+    display: block;
+    box-sizing: border-box;
+
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+
+    -webkit-touch-callout: none;
+    -khtml-user-select: none;
+    -ms-touch-action: pan-y;
+        touch-action: pan-y;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.slick-list
+{
+    position: relative;
+
+    display: block;
+    overflow: hidden;
+
+    margin: 0;
+    padding: 0;
+}
+.slick-list:focus
+{
+    outline: none;
+}
+.slick-list.dragging
+{
+    cursor: pointer;
+    cursor: hand;
+}
+
+.slick-slider .slick-track,
+.slick-slider .slick-list
+{
+    -webkit-transform: translate3d(0, 0, 0);
+       -moz-transform: translate3d(0, 0, 0);
+        -ms-transform: translate3d(0, 0, 0);
+         -o-transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0);
+}
+
+.slick-track
+{
+    position: relative;
+    top: 0;
+    left: 0;
+
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.slick-track:before,
+.slick-track:after
+{
+    display: table;
+
+    content: '';
+}
+.slick-track:after
+{
+    clear: both;
+}
+.slick-loading .slick-track
+{
+    visibility: hidden;
+}
+
+.slick-slide
+{
+    display: none;
+    float: left;
+
+    height: 100%;
+    min-height: 1px;
+}
+[dir='rtl'] .slick-slide
+{
+    float: right;
+}
+.slick-slide img
+{
+    display: inline-block;
+}
+.slick-slide.slick-loading img
+{
+    display: none;
+}
+.slick-slide.dragging img
+{
+    pointer-events: none;
+}
+.slick-initialized .slick-slide
+{
+    display: block;
+}
+.slick-loading .slick-slide
+{
+    visibility: hidden;
+}
+.slick-vertical .slick-slide
+{
+    display: block;
+
+    height: auto;
+
+    border: 1px solid transparent;
+}
+.slick-arrow.slick-hidden {
+    display: none;
+}
+.slideshow {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    max-width: 1034px;
+   
+  }
+  .slideshow * {
+    outline: none;
+  }
+  .slideshow .slider {
+    box-shadow: 0 20px 50px -25px black;
+  }
+  .slideshow .slider-track {
+    -webkit-transition: all 1s cubic-bezier(0.7, 0, 0.3, 1);
+    transition: all 1s cubic-bezier(0.7, 0, 0.3, 1);
+  }
+  .slideshow .item {
+    height: 100%;
+    position: relative;
+    z-index: 1;
+  }
+  .slideshow .item img {
+    width: 100%;
+
+    
+  }
+ 
+  
+  .slick-slide {
+    margin: 0 10px;
+}
+.slick-slide img {
+    max-width: 100%;
+}
+
+html{
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px 50px;
+    background-color: #f4f4f4;
+}
+
+#container {
+    max-width: 80%;
+    margin: 180px auto 0;
+    background: #fff;
+    padding: 20px;
+    min-height: 550px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    position: fixed;
+    width: 100%;
+    background: #c0f5db;
+    top: 0;
+    left: 0;
+    padding: 10px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.input-wrapper {
+    text-align: center;
+    position: fixed;
+    width: 100%;
+    background: #c0f5db;
+    top: 50px;
+    left: 0;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+
+.custom-file-input, .custom-url-input, .url-button {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    margin: 5px;
+    /* border-color: #007bff; */
+}
+
+.custom-file-input:hover, .custom-url-input:hover, .url-button:hover {
+    background-color: #0056b3;
+}
+
+.url-input {
+    padding: 10px;
+    width: 300px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+}
+
+#filename {
+    margin-top: 10px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.filename-color {
+    color: red;
+    font-weight: bold;
+}
+  @keyframes cssAnimation {
+    from {
+      -webkit-transform: scale(1) translate(0px);
+    }
+    to {
+      -webkit-transform: scale(1) translate(0px);
+    }
+  }
+  @-webkit-keyframes cssAnimation {
+    from {
+      -webkit-transform: scale(1) translate(0px);
+    }
+    to {
+      -webkit-transform: scale(1) translate(0px);
+    }
+  }
