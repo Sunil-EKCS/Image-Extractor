@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <h1 style="margin-top: 0px;">HTML5 Banner Frame Extractor</h1>
+    <h1 style="margin-top: 0px;">Frame Extractor</h1>
     <div class="input-wrapper">
         
 
@@ -33,7 +33,7 @@
 
                 <form method="post" style="margin-top: 20px;">
                     <div class="form-group">
-                    <label class="fw-bold fs-4" for="gif">Enter GIF Path:</label>
+                    <label class="fw-bold fs-4" for="gif">Enter GIF URL:</label>
                     <input class="form-control" type="text" id="gif" name="gif" required>
                     <button  class="btn btn-warning btn-lg mt-3" type="submit">GIF Extractor</button>
                 </div>
@@ -51,7 +51,7 @@
                     <div class="card-header text-center">
                         <h2>Extracted Frames</h2>
                     </div>
-                    <div class="card-body" style="min-height: 500px;">
+                    <div class="card-body" style="min-height: 560px;">
                 {% if images %}
                 
                 <div class="slider-container">

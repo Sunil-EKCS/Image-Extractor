@@ -4,6 +4,7 @@ import io
 import imagehash
 from PIL import Image
 from flask import Flask, render_template, request, send_from_directory, redirect, url_for
+import requests
 from werkzeug.utils import secure_filename
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -24,7 +25,7 @@ os.makedirs(app.config['GIF_FOLDER'], exist_ok=True)
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
-def capture_animation_frames(url, output_dir, browser='chrome', num_frames=20, interval=1):
+def capture_animation_frames(url, output_dir, browser='chrome', num_frames=40, interval=0.5):
     if browser == 'chrome':
         service = ChromeService(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=service)
@@ -36,7 +37,7 @@ def capture_animation_frames(url, output_dir, browser='chrome', num_frames=20, i
 
     try:
         driver.get(url)
-        time.sleep(3)  # Wait for the page to load and animation to start
+        time.sleep(2)  # Wait for the page to load and animation to start
 
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
@@ -74,6 +75,13 @@ def extract_frames(gif_path, output_folder):
             frame_path = os.path.join(output_folder, f"frame_{frame}.png")
             img.save(frame_path, "PNG")
 
+def download_gif(url, local_path):
+    """Download a GIF from a URL and save it to a local path."""
+    response = requests.get(url)
+    response.raise_for_status()  # Ensure the request was successful
+    with open(local_path, 'wb') as file:
+        file.write(response.content)
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -90,14 +98,50 @@ def index():
             except Exception as e:
                 return f"An error occurred: {e}", 400
 
-        elif 'gif' in request.form:
-            gif_path = request.form['gif']
-            if not gif_path.startswith('file:///'):
-                gif_path = 'file:///' + gif_path
-
+        elif 'gif_url' in request.form:
+            gif_url = request.form['gif_url']
             try:
                 output_dir = app.config['UPLOAD_FOLDER']
-                extract_frames(gif_path, output_dir)
+                # Download the GIF from the URL
+                response = requests.get(gif_url)
+                if response.status_code == 200:
+                    # Save the GIF to a temporary file
+                    gif_path = os.path.join(app.config['GIF_FOLDER'], 'temp.gif')
+                    with open(gif_path, 'wb') as f:
+                        f.write(response.content)
+
+                    # Extract frames from the saved GIF
+                    extract_frames(gif_path, output_dir)
+
+                    # Remove the temporary GIF file
+                    os.remove(gif_path)
+
+                    saved_images = [f for f in os.listdir(output_dir) if os.path.isfile(os.path.join(output_dir, f))]
+
+                    return render_template('index.html', images=saved_images)
+
+                else:
+                    return f"Failed to download GIF. Status code: {response.status_code}", 400
+
+            except Exception as e:
+                return f"An error occurred: {e}", 400
+
+        elif 'gif' in request.form:
+            gif_url = request.form['gif']
+            local_gif_path = os.path.join(app.config['UPLOAD_FOLDER'], 'temp.gif')
+            if not gif_url.startswith('http://') and not gif_url.startswith('https://'):
+                gif_url = 'http://' + gif_url
+
+            try:
+                # Download GIF from the provided URL
+                download_gif(gif_url, local_gif_path)
+
+                # Extract frames from the downloaded GIF
+                output_dir = app.config['UPLOAD_FOLDER']
+                extract_frames(local_gif_path, output_dir)
+
+                # Clean up the downloaded GIF
+                os.remove(local_gif_path)
 
                 saved_images = [f for f in os.listdir(output_dir) if os.path.isfile(os.path.join(output_dir, f))]
 
