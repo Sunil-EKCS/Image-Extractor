@@ -1,20 +1,16 @@
-name: Web Build + Deployment to GitHub Pages 
+name: Build and Deploy to GitHub Pages
 
 on:
   push:
-    branches: 
+    branches:
       - master
       - main
   pull_request:
-    branches: 
+    branches:
       - master
       - main
   workflow_dispatch:
 
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-  
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,50 +19,28 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup Python 3.12.2
-      uses: actions/setup-python@v2
+    - name: Setup Python 3.12.4
+      uses: actions/setup-python@v4
       with:
-        python-version: 3.12.2
+        python-version: 3.12.4
 
-    - name: Install Python Dependencies
+    - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.19.0'
-
-    - name: Install Flet
+    - name: Build Project
       run: |
-        pip install flet
-
-    - name: Verify Flutter Installation
-      run: flutter --version
-
-    - name: Verify Flet Installation
-      run: flet --version
-
-    - name: Flet Build Web
-      run: |
-        echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}, USER: ${GITHUB_REPOSITORY%/*}, PROJECT_BASE_URL: ${GITHUB_REPOSITORY#*/}"
-        ls -la  # List files in the current directory
-        flet build web --module-name app --base-url ${GITHUB_REPOSITORY#*/} --route-url-strategy hash
-
-    - name: Check Build Directory
-      run: |
-        ls -la build/web  # List files in the build/web directory
+        python app.py  # Ensure this runs your Flask app or necessary build steps
 
     - name: Upload Artifact
       uses: actions/upload-pages-artifact@v3
       with:
         name: web-build-artifact
-        path: build/web
+        path: static/images  # Adjust this path to match your output directory
 
   deploy:
     needs: build
-
     runs-on: ubuntu-latest
 
     permissions:
@@ -76,14 +50,13 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-      
+
     steps:
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-        
-      - name: Deploy to GitHub Pages 🚀
-        if: github.event_name == 'push'
-        id: deployment
-        uses: actions/deploy-pages@v4.0.5
-        with:
-          artifact_name: web-build-artifact
+    - name: Setup Pages
+      uses: actions/configure-pages@v5
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+      with:
+        artifact_name: web-build-artifact
