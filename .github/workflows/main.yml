@@ -1,89 +1,36 @@
-name: Web Build + Deployment to GitHub Pages 
+name: Deploy static site to GitHub Pages
 
 on:
   push:
-    branches: 
-      - master
+    branches:
       - main
-  pull_request:
-    branches: 
-      - master
-      - main
-  workflow_dispatch:
 
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-  
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v2
 
-    - name: Setup Python 3.12.4
-      uses: actions/setup-python@v4
+    - name: Set up Python
+      uses: actions/setup-python@v2
       with:
-        python-version: 3.12.2
+        python-version: '3.x'
 
-    - name: Install Python Dependencies
+    - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.19.0'
-
-    - name: Install Flet
+    - name: Image Extractor
       run: |
-        pip install flet
+        python freeze.py
 
-    - name: Verify Flutter Installation
-      run: flutter --version
-
-    - name: Verify Flet Installation
-      run: flet --version
-
-    - name: Flet Build Web
+    - name: Deploy to GitHub Pages
       run: |
-        echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}, USER: ${GITHUB_REPOSITORY%/*}, PROJECT_BASE_URL: ${GITHUB_REPOSITORY#*/}"
-        ls -la  # List files in the current directory
-        flet build web --module-name app --base-url ${GITHUB_REPOSITORY#*/} --route-url-strategy hash
-
-    - name: Check Build Directory
-      run: |
-        ls -la build/web  # List files in the build/web directory
-
-    - name: Upload Artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        name: web-build-artifact
-        path: build/web
-
-  deploy:
-    needs: build
-
-    runs-on: ubuntu-latest
-
-    permissions:
-      pages: write
-      id-token: write
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-      
-    steps:
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-        
-      - name: Deploy to GitHub Pages 🚀
-        if: github.event_name == 'push'
-        id: deployment
-        uses: actions/deploy-pages@v4.0.5
-        with:
-          artifact_name: web-build-artifact
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add -A
+        git commit -m 'Deploy to GitHub Pages'
+        git push -fq https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} gh-pages
