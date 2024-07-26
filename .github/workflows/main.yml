@@ -4,11 +4,11 @@ on:
   push:
     branches: 
       - master
-      - main
+      - test-build
   pull_request:
     branches: 
       - master
-      - main
+      - test-build
   workflow_dispatch:
 
 concurrency:
