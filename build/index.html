@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Banner Frame Extractor</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/slick.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/slick-theme.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" >
+</head>
+
+<body>
+    <h1 style="margin-top: 0px;">Frame Extractor</h1>
+    <div class="input-wrapper">
+        
+
+    </div>
+    <div class="container-fluid" style="margin-top: 80px;">
+        <div class="row">
+            <div class="col-3  h-100">
+                <div class="card bg-light  p-3">
+                <form class="mb-4" method="post">
+                    <span  class="fw-bold fs-4">First Clear All :</span> <button class="btn btn-danger btn-lg" type="submit" name="clear">Clear All</button>
+                </form>
+                <form  class="mb-4" method="post">
+                    <div class="form-group">
+                    <label class="fw-bold fs-4" for="url">Enter URL:</label>
+                    <input class="form-control" type="text" id="url" name="url" required>
+                    <button class="btn btn-success btn-lg mt-3" type="submit">Animate Extractor</button>
+                </div>
+                </form>
+                <hr>
+
+                <form method="post" style="margin-top: 20px;">
+                    <div class="form-group">
+                    <label class="fw-bold fs-4" for="gif">Enter GIF URL:</label>
+                    <input class="form-control" type="text" id="gif" name="gif" required>
+                    <button  class="btn btn-warning btn-lg mt-3" type="submit">GIF Extractor</button>
+                </div>
+                </form>
+<div class="text-center fs-4 fw-bold p-2">Or</div>
+                <form method="post" enctype="multipart/form-data" style="margin-top: 10px;">
+                    <label  class="fw-bold fs-4" for="file">Upload GIF:</label>
+                    <input type="file" id="file" name="file" accept=".gif" required>
+                    <button class="btn btn-warning btn-lg mt-3">Upload and Extract</button>
+                </form>
+            </div>
+            </div>
+            <div class="col-9">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h2>Extracted Frames</h2>
+                    </div>
+                    <div class="card-body" style="min-height: 560px;">
+                
+            </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load latest version of html2canvas from CDN -->
+    <script src="/static/js/jquery-3.6.0.min.js"></script>
+    <script src="/static/js/slick.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.slider').slick({
+                draggable: false,
+                autoplay: false,
+                autoplaySpeed: 7000,
+                arrows: true,
+                dots: true,
+                fade: true,
+                speed: 500,
+                infinite: true,
+                //cssEase: 'ease-in-out',
+                touchThreshold: 100
+            });
+        });
+    </script>
+</body>
+
+</html>
