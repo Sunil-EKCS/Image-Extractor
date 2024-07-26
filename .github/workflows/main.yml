@@ -37,7 +37,7 @@ jobs:
     - name: Build Project
       run: |
         echo "Starting build process..."
-        python main.py
+        python app.py
         echo "Build process completed."
 
     - name: List Build Output
