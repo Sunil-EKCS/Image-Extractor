@@ -1,16 +1,20 @@
-name: Build and Deploy to GitHub Pages
+name: Web Build + Deployment to GitHub Pages 
 
 on:
   push:
-    branches:
+    branches: 
       - master
       - main
   pull_request:
-    branches:
+    branches: 
       - master
       - main
   workflow_dispatch:
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+  
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -19,40 +23,50 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup Python 3.12
-      uses: actions/setup-python@v4
+    - name: Setup Python 3.12.2
+      uses: actions/setup-python@v2
       with:
-        python-version: 3.12
+        python-version: 3.12.2
 
-    - name: Install Dependencies
+    - name: Install Python Dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Debug Python Environment
-      run: |
-        python --version
-        pip list
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.19.0'
 
-    - name: Build Project
+    - name: Install Flet
       run: |
-        echo "Starting build process..."
-        python app.py
-        echo "Build process completed."
+        pip install flet
 
-    - name: List Build Output
+    - name: Verify Flutter Installation
+      run: flutter --version
+
+    - name: Verify Flet Installation
+      run: flet --version
+
+    - name: Flet Build Web
       run: |
-        echo "Listing build output..."
-        ls -la static/images  # Adjust this path to match your output directory
+        echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}, USER: ${GITHUB_REPOSITORY%/*}, PROJECT_BASE_URL: ${GITHUB_REPOSITORY#*/}"
+        ls -la  # List files in the current directory
+        flet build web --module-name app --base-url ${GITHUB_REPOSITORY#*/} --route-url-strategy hash
+
+    - name: Check Build Directory
+      run: |
+        ls -la build/web  # List files in the build/web directory
 
     - name: Upload Artifact
       uses: actions/upload-pages-artifact@v3
       with:
         name: web-build-artifact
-        path: static/images  # Adjust this path to match your output directory
+        path: build/web
 
   deploy:
     needs: build
+
     runs-on: ubuntu-latest
 
     permissions:
@@ -62,13 +76,14 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
+      
     steps:
-    - name: Setup Pages
-      uses: actions/configure-pages@v5
-
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v4
-      with:
-        artifact_name: web-build-artifact
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+        
+      - name: Deploy to GitHub Pages 🚀
+        if: github.event_name == 'push'
+        id: deployment
+        uses: actions/deploy-pages@v4.0.5
+        with:
+          artifact_name: web-build-artifact
